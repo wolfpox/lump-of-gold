@@ -9,6 +9,31 @@ The browser build is single-threaded, so the page pauses briefly while the mesh 
 (about 1–2 s at 1×; 4× takes much longer in a browser). Export downloads a zip with
 `lump.glb` and the three `.dds` images.
 
+## Relief editor (current main scene: `relief.tscn`)
+
+Draw a flat silhouette and line art, build height on it with soft brushes, then flip to the
+back, which shares the same outline and is a second canvas. Code is in `relief/`.
+
+- Layers (512×512 floats): shared silhouette mask, a sculpt layer per side, line art per side.
+- Shape modifiers per side (non-destructive, live): Inflate (Poisson "balloon" from the
+  outline), Inflate profile, Plate height, Edge falloff width + shape (round/soft/chamfer/cove),
+  and a shared Core thickness.
+  Surface = `edge(sd) * max(core/2 + plate + inflate * phi^profile + sculpt, 0)`.
+- Brushes: Raise, Lower/Carve, Smooth, Flatten, Reset to base, Silhouette ±, Line art ±.
+  Flow builds up per dab; Opacity caps what a single stroke can reach. Pen pressure drives flow.
+- Keys: F flip side, [ ] brush size (or mouse wheel on the canvas), X mirror symmetry,
+  1–9 tools, Ctrl+Z undo, Ctrl+S save (`out/relief.lump`). Drop an image on the window to
+  use it as line art.
+- The 3D view displaces a 512×512 grid on the GPU, so it is real-time at full resolution.
+- **Game view (G):** builds the real low-poly mesh for a triangle budget per side (outline
+  traced and simplified, interior filled by error-driven vertex insertion, front and back share
+  the rim) and lights it with full-resolution normals and ambient occlusion from the
+  heightfield, i.e. what a baked normal map + AO map will look like in Godot. Wireframe and
+  "flat shading" toggles show what the mesh alone looks like. Code: `relief/relief_mesher.gd`,
+  `relief/relief_game.gdshader`, AO bake `relief/relief_ao.gdshader`.
+
+The earlier three-view texture sculpt demo is still `main.tscn`.
+
 ## Run the demo locally
 
 Open the folder in Godot 4.7 and press F5, or:
