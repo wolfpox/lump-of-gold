@@ -1,0 +1,6 @@
+.godot/
+build/
+out/
+tools/shot.png
+*.tmp
+tools/
