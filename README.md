@@ -11,6 +11,9 @@ The browser build is single-threaded, so the page pauses briefly while the mesh 
 
 ## Relief editor (current main scene: `relief.tscn`)
 
+The plan this is heading toward (cards, vectors, baked maps, assembly, roadmap) is in
+[`docs/DESIGN.md`](docs/DESIGN.md).
+
 Draw a flat silhouette and line art, build height on it with soft brushes, then flip to the
 back, which shares the same outline and is a second canvas. Code is in `relief/`.
 
